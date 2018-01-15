@@ -60,16 +60,16 @@
 
 #carousel-nav li {
 	display: inline-block;
-	width: 8px;
-	height: 8px;
+	width: 12px;
+	height: 12px;
 	border-radius: 50%;
-	border: 2px solid green;
+	border: 1px solid #ccc;
 	padding: 0;
 	margin: 0 5px;
 }
 
 #carousel-nav .active {
-	background: green;
+	background: #ccc;
 }
 
 
