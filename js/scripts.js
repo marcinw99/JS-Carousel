@@ -10,20 +10,13 @@ $(function() {
 		$carousel = $('#carousel'),
 		$slideIndicatorsCarousel = $('#carousel-nav');
 
-	function generateIndicators() {
-		var result = '', 
-			liElementsSize = $carouselList.find('li').length;
+	function addIndicatorsToDOM() {
+		var liElementsSize = $carouselList.find('li').length;
 
 		for (var i = 0; i < liElementsSize; i++) {
-			result += '<li></li>';
+			var $result = $("<li>").data('id', i);
+			$slideIndicatorsCarousel.append($result);
 		}
-
-		return $(result);
-	}
-
-	function addIndicatorsToDOM() {
-		var $dots = generateIndicators();
-		$slideIndicatorsCarousel.append($dots);
 	}
 
 	function addDataIdToSlides() {
@@ -95,15 +88,47 @@ $(function() {
 		}
 	);
 
-	$('#js-prevBtn').on('click', function() {	
+	function toPrevSlide() {
 		$('#js-prevBtn').prop('disabled', true);	
 		changeSlide(CONSTANTS.LEFT_DIRECTION);
 		setTimeout(function() { $('#js-prevBtn').prop('disabled', false); }, CONSTANTS.SLIDE_ANIMATION_TIME);
-	});
+	}
 
-	$('#js-nextBtn').on('click', function() {
+	function toNextSlide() {
 		$('#js-nextBtn').prop('disabled', true);	
 		changeSlide(CONSTANTS.RIGHT_DIRECTION);
 		setTimeout(function() { $('#js-nextBtn').prop('disabled', false); }, CONSTANTS.SLIDE_ANIMATION_TIME);
-	});
+	}
+
+	$('#js-prevBtn').on('click', toPrevSlide);
+
+	$('#js-nextBtn').on('click', toNextSlide);
+
+	function addListenersToIndicators() {
+		for (var i=0; i <= $carouselList.find('li').length; i++) {
+			$(`#carousel-nav li:nth-child(${i})`).on('click', function() {
+				var $currentActiveIndex = $slideIndicatorsCarousel.find(".active").data('id'),
+					$clickedIndex = $(this).data('id');
+
+				if ($currentActiveIndex != null && $clickedIndex != $currentActiveIndex) {
+					var difference = $clickedIndex - $currentActiveIndex;
+					var toPrev = false;
+					if (difference < 0) { 
+						toPrev = true;
+						difference *= -1;
+					}
+					for (var j = 0; j < difference; j++) {
+						if (toPrev) {
+							toPrevSlide();
+						} else {
+							toNextSlide();
+						}
+					}
+				}
+			});
+		}
+	}
+
+	addListenersToIndicators();
+
 });
